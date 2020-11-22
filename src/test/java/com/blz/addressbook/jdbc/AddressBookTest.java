@@ -38,4 +38,9 @@ public class AddressBookTest {
 				"2020-06-02");
 		Assert.assertEquals(1, addressBookData.size());
 	}
+
+	@Test
+	public void givenAddresBook_WhenRetrieved_ShouldReturnCountOfCity() throws AddressBookException {
+		Assert.assertEquals(1, addressBookService.readAddressBookData("count", "Tirupati"));
+	}
 }
