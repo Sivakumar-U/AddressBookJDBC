@@ -1,6 +1,7 @@
 package com.blz.addressbook.jdbc;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -75,9 +76,11 @@ public class AddressBookDBService {
 				String city = resultSet.getString("City");
 				String state = resultSet.getString("State");
 				String zip = resultSet.getString("Zip");
-				String phoneNo = resultSet.getString("PhoneNumber");
+				String phoneNo = resultSet.getString("PhoneNo");
 				String email = resultSet.getString("Email");
-				addressBookData.add(new AddressBookData(firstName, lastName, address, city, state, phoneNo, email));
+				String date = resultSet.getString("Date");
+				addressBookData
+						.add(new AddressBookData(firstName, lastName, address, city, state, zip, phoneNo, email, date));
 			}
 		} catch (SQLException e) {
 			throw new AddressBookException(e.getMessage(), AddressBookException.ExceptionType.DATABASE_EXCEPTION);
@@ -139,6 +142,28 @@ public class AddressBookDBService {
 			throw new AddressBookException(e.getMessage(), AddressBookException.ExceptionType.DATABASE_EXCEPTION);
 		}
 		return count;
+	}
+
+	public AddressBookData addNewContact(String firstName, String lastName, String address, String city, String state,
+			String zip, String phoneNo, String email, String date) throws AddressBookException {
+		int id = -1;
+		AddressBookData addressBookData = null;
+		String query = String.format(
+				"insert into addressBook(FirstName, LastName, Address, City, State, Zip, PhoneNo, Email, Date) values ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s','%s')",
+				firstName, lastName, address, city, state, zip, phoneNo, email, date);
+		try (Connection connection = this.getConnection()) {
+			Statement statement = connection.createStatement();
+			int rowChanged = statement.executeUpdate(query, statement.RETURN_GENERATED_KEYS);
+			if (rowChanged == 1) {
+				ResultSet resultSet = statement.getGeneratedKeys();
+				if (resultSet.next())
+					id = resultSet.getInt(1);
+			}
+			addressBookData = new AddressBookData(firstName, lastName, address, city, state, zip, phoneNo, email, date);
+		} catch (SQLException e) {
+			throw new AddressBookException(e.getMessage(), AddressBookException.ExceptionType.DATABASE_EXCEPTION);
+		}
+		return addressBookData;
 	}
 
 }

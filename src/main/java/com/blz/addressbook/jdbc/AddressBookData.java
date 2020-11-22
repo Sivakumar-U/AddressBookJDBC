@@ -1,5 +1,7 @@
 package com.blz.addressbook.jdbc;
 
+import java.sql.Date;
+
 public class AddressBookData {
 
 	String firstName;
@@ -10,9 +12,10 @@ public class AddressBookData {
 	String zip;
 	String phoneNo;
 	String email;
+	String date;
 
-	public AddressBookData(String firstName, String lastName, String address, String city, String state, String phoneNo,
-			String email) {
+	public AddressBookData(String firstName, String lastName, String address, String city, String state, String zip,
+			String phoneNo, String email, String date) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -22,7 +25,16 @@ public class AddressBookData {
 		this.zip = zip;
 		this.phoneNo = phoneNo;
 		this.email = email;
+		this.date = date;
 
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 	public String getFirstName() {
@@ -113,6 +125,11 @@ public class AddressBookData {
 			if (other.city != null)
 				return false;
 		} else if (!city.equals(other.city))
+			return false;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
 			return false;
 		if (email == null) {
 			if (other.email != null)
