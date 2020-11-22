@@ -24,4 +24,11 @@ public class AddressBookTest {
 		List<AddressBookData> addressBookData = addressBookService.readAddressBookData(IOService.DB_IO);
 		Assert.assertEquals(5, addressBookData.size());
 	}
+
+	@Test
+	public void givenAddressBook_WhenUpdate_ShouldSyncWithDB() throws AddressBookException {
+		addressBookService.updateRecord("Jyo", "America");
+		boolean result = addressBookService.checkUpdatedRecordSyncWithDatabase("Jyo");
+		Assert.assertTrue(result);
+	}
 }
