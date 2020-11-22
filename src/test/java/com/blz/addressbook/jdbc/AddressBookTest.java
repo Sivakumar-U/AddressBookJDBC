@@ -1,7 +1,5 @@
 package com.blz.addressbook.jdbc;
 
-import static org.junit.Assert.*;
-
 import java.util.List;
 
 import org.junit.Assert;
@@ -42,5 +40,13 @@ public class AddressBookTest {
 	@Test
 	public void givenAddresBook_WhenRetrieved_ShouldReturnCountOfCity() throws AddressBookException {
 		Assert.assertEquals(1, addressBookService.readAddressBookData("count", "Tirupati"));
+	}
+
+	@Test
+	public void givenAddresBookDetails_WhenAdded_ShouldSyncWithDB() throws AddressBookException {
+		addressBookService.readAddressBookData(IOService.DB_IO);
+		addressBookService.addNewContact("Siva", "Panapati", "Mcl", "Tirupati", "AP", "517586", "897562103", "sivap@gmail.com", "2020-11-22");
+		boolean result = addressBookService.checkUpdatedRecordSyncWithDatabase("Siva");
+		Assert.assertTrue(result);
 	}
 }
