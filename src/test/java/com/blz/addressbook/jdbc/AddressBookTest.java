@@ -1,5 +1,6 @@
 package com.blz.addressbook.jdbc;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -45,8 +46,24 @@ public class AddressBookTest {
 	@Test
 	public void givenAddresBookDetails_WhenAdded_ShouldSyncWithDB() throws AddressBookException {
 		addressBookService.readAddressBookData(IOService.DB_IO);
-		addressBookService.addNewContact("Siva", "Panapati", "Mcl", "Tirupati", "AP", "517586", "897562103", "sivap@gmail.com", "2020-11-22");
+		addressBookService.addNewContact("Siva", "Panapati", "Mcl", "Tirupati", "AP", "517586", "897562103",
+				"sivap@gmail.com", "2020-11-22");
 		boolean result = addressBookService.checkUpdatedRecordSyncWithDatabase("Siva");
 		Assert.assertTrue(result);
+	}
+
+	@Test
+	public void givenMultipleContact_WhenAdded_ShouldSyncWithDB() throws AddressBookException {
+		AddressBookData[] contactArray = {
+				new AddressBookData("Tharun", "Pulluru", "Mcl", "Tirupati", "AP", "517536", "8975658741",
+						"tharun@gmail.com", "2020-11-23"),
+				new AddressBookData("Nani", "Kalthireddy", "Mr palli", "Tirupati", "AP", "517533", "9874563201",
+						"nani@gmail.com", "2020-11-23") };
+		addressBookService.addMultipleContactsToDBUsingThreads(Arrays.asList(contactArray));
+		boolean result1 = addressBookService.checkUpdatedRecordSyncWithDatabase("Tharun");
+		boolean result2 = addressBookService.checkUpdatedRecordSyncWithDatabase("Nani");
+		Assert.assertTrue(result1);
+		Assert.assertTrue(result2);
+
 	}
 }
