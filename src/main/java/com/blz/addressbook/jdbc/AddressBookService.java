@@ -69,4 +69,7 @@ public class AddressBookService {
 				email, date));
 	}
 
+	public void addMultipleContactsToDBUsingThreads(List<AddressBookData> record) {
+		addressBookDBService.addMultipleContactsToDBUsingThread(record);
+	}
 }

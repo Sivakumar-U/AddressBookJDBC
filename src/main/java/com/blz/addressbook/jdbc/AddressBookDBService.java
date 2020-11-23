@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddressBookDBService {
 
@@ -166,4 +168,31 @@ public class AddressBookDBService {
 		return addressBookData;
 	}
 
+	public void addMultipleContactsToDBUsingThread(List<AddressBookData> record) {
+		Map<Integer, Boolean> addressAdditionStatus = new HashMap<Integer, Boolean>();
+		record.forEach(addressbookdata -> {
+			Runnable task = () -> {
+				addressAdditionStatus.put(addressbookdata.hashCode(), false);
+				System.out.println("Contact Being Added:" + Thread.currentThread().getName());
+				try {
+					this.addNewContact(addressbookdata.getFirstName(), addressbookdata.getLastName(),
+							addressbookdata.getAddress(), addressbookdata.getCity(), addressbookdata.getState(),
+							addressbookdata.getZip(), addressbookdata.getPhoneNo(), addressbookdata.getEmail(),
+							addressbookdata.getDate());
+				} catch (AddressBookException e) {
+					e.printStackTrace();
+				}
+				addressAdditionStatus.put(addressbookdata.hashCode(), true);
+				System.out.println("Contact Added:" + Thread.currentThread().getName());
+			};
+			Thread thread = new Thread(task, addressbookdata.getFirstName());
+			thread.start();
+		});
+		while (addressAdditionStatus.containsValue(false)) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+			}
+		}
+	}
 }
